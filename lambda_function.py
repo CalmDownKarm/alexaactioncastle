@@ -65,22 +65,33 @@ class SpecialCommandHandler(AbstractRequestHandler):
         if item1 == "fish" and item2 is None:
             # Catch fish
             speak_output, end_game = run_special_command(game_state, "catch fish")
+            END = END or end_game
+
         elif item1 == "fish" and item2 in ["pole", "fishing pole"]:
             speak_output, end_game = run_special_command(game_state, "catch fish with pole")
+            END = END or end_game
+
             # Catch fish with fishing pole
         elif item1 == "troll" and (item2 is None or item2 in ['branch', 'club', 'stick']):
             # Hit troll with club
             speak_output, end_game = run_special_command(game_state, "attack troll")
+            END = END or end_game
+
         elif item1 == "troll" and item2 == "fish":
-            (speak_output, end_game), _ = run_special_command(game_state, "feed troll a fish")
+            speak_output, end_game = run_special_command(game_state, "feed troll a fish")
         elif item1 == "rose" and item2 is None:
             speak_output, end_game = run_special_command(game_state, "smell rose")
         elif item1 == "tree" and item2 is None:
             speak_output, end_game = run_special_command(game_state, "climb tree")
         elif item1 == "guard" and item2 == "club":
-            (speak_output, end_game), _ = run_special_command(game_state, "hit guard with club")
-
-        END = END or end_game
+            speak_output, end_game = run_special_command(game_state, "hit guard with club")
+        # TODO READ RUNES AND SIT ON THRONE
+        elif item1 == "runes" and item2 == "candle":
+            speak_output, end_game = run_special_command(game_state, "read runes")
+        elif item1 == "throne" and item2 == None:
+            speak_output, end_game = run_special_command(game_state, "sit on throne")
+        elif item1 == "key" and item2 == "door":
+            speak_output, end_game = run_special_command(game_state, "open")
         return (handler_input.response_builder.speak(speak_output).ask(speak_output).response)
 
 

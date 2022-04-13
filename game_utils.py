@@ -14,11 +14,9 @@ def run_special_command(game, command):
 
 def perform_multiple_actions(game, *args):
     (actions) = args[0]
-    descriptions_with_end  = [action(game, params) for action, params in actions]
-    descriptions, end_game_flags = map(list, zip(*descriptions_with_end))
-    end_game = any(end_game_flags)
+    descriptions = [action(game, params) for action, params in actions]
     strung = " ".join([d for d in descriptions if isinstance(d, str)])
-    return strung, end_game
+    return strung
 
 
 def add_item_to_inventory(game, *args):
@@ -27,9 +25,7 @@ def add_item_to_inventory(game, *args):
     if(not game.is_in_inventory(item)):
         game.add_to_inventory(item)
         return action_description
-    else:
-        return already_done_description
-    # return False
+    return already_done_description
 
 
 def take(game, *args):
@@ -37,7 +33,7 @@ def take(game, *args):
     # This gets set to True if posession of this object ends the game.
     end_game = False
     (item_name) = args[0]
-    
+
     # check whether any of the items at this location match the command
     if item_name in game.inventory:
         return f"You already have {item_name}", end_game
@@ -52,6 +48,7 @@ def take(game, *args):
             return "You cannot take the %s." % item_name, end_game
     return f"You can't find {item_name}", end_game
 
+
 def check_inventory(game):
     """ The player wants to check their inventory"""
     if len(game.inventory) == 0:
@@ -62,6 +59,7 @@ def check_inventory(game):
             item = game.inventory[item_name]
             descriptions.append(item.description)
         return "You have: " + ", ".join(descriptions)
+
 
 def describe_something(game, *args):
     """Describe some aspect of the Item"""
@@ -75,14 +73,15 @@ def destroy_item(game, *args):
     # Destroy Item can never end the game
     """Removes an Item from the game by setting its location is set to None."""
     (item, action_description, already_done_description) = args[0]
-    logger.error(f"item: {item}, action Description : {action_description}, Done: {already_done_description}")
+    logger.error(
+        f"item: {item}, action Description : {action_description}, Done: {already_done_description}")
     if game.is_in_inventory(item):
         game.inventory.pop(item.name)
-        return action_description, False
+        return action_description
     elif item.name in game.curr_location.items:
         game.curr_location.remove_item(item)
-        return action_description, False
-    return already_done_description, False
+        return action_description
+    return already_done_description
 
 
 def create_item(game, *args):
@@ -117,7 +116,8 @@ def build_game():
         "Fish Pond", "You are at the edge of a fish pond. A path leads North.")
     winding_path = Location(
         "Winding Path", "You are at the edge of a winding path that leads South and East. There is a tall tree here.")
-    up_tall_tree = Location("Tall Tree", "You're on top of a tall tree, you can see for miles.")
+    up_tall_tree = Location(
+        "Tall Tree", "You're on top of a tall tree, you can see for miles.")
     drawbridge = Location(
         "Drawbridge", "You come to the drawbridge of Action Castle. There is a mean troll guarding the bridge.")
     courtyard = Location(
@@ -235,9 +235,8 @@ def build_game():
     wearing_crown = Item("wearing crown", "You are wearing the crown")
     wearing_crown.set_property("gettable", False)
 
-    game = Game(cottage)
     # Add special functions to your items
-    
+
     rose.add_action("smell rose",  describe_something, ("It smells sweet."))
     rose.add_action("smell rose",  describe_something, ("It smells sweet."))
     lamp.add_action("light lamp", create_item, (lit_lamp,
@@ -268,29 +267,29 @@ def build_game():
                                                                       ]), preconditions={"inventory_contains": fish})
 
     door.add_action("open", perform_multiple_actions, (
-                    [(destroy_item, (door, "You put the troll's key in the door and turn...")),
-                        (create_item, (unlocked_door, "The door is unlocked."))]))
+                    [(destroy_item, (door, "You put the troll's key in the door and turn...", "Already opened")),
+                        (create_item, (unlocked_door, "The door is unlocked.", "The door is already unlocked"))]), preconditions={"inventory_contains": key})
 
     candle.add_action("light candle", perform_multiple_actions,
                       ([(create_item, (lit_candle, "You light the candle. It gives off a strange acrid smoke, causing the ghost to flee the dunegeon. It leaves behind a gold crown.")),
                        (create_item, (crown, "The crown is in front of you.."))]), preconditions={"in_location": dungeon})
 
-    princess.add_action("ask about crown", perform_multiple_actions,
-                        [(describe_something, ("My father's crown was lost after he died")),
-                         (create_item, (talked_to, "The princess appreciates your conversation. She's warming up to you."))])
-    princess.add_action("ask about tower", perform_multiple_actions,
-                        [(describe_something, ("I cannot leave the tower until I'm wed!")),
-                         (create_item, (talked_to, "The princess appreciates your conversation. She's warming up to you."))])
+    # princess.add_action("ask about crown", perform_multiple_actions,
+    #                     [(describe_something, ("My father's crown was lost after he died")),
+    #                      (create_item, (talked_to, "The princess appreciates your conversation. She's warming up to you."))])
+    # princess.add_action("ask about tower", perform_multiple_actions,
+    #                     [(describe_something, ("I cannot leave the tower until I'm wed!")),
+    #                      (create_item, (talked_to, "The princess appreciates your conversation. She's warming up to you."))])
 
-    princess.add_action("ask about throne", perform_multiple_actions,
-                        [(describe_something, ("Only the rightful ruler of Action Castle may claim the thrown")),
-                         (create_item, (talked_to, "The princess appreciates your conversation. She's warming up to you."))])
+    # princess.add_action("ask about throne", perform_multiple_actions,
+    #                     [(describe_something, ("Only the rightful ruler of Action Castle may claim the thrown")),
+    #                      (create_item, (talked_to, "The princess appreciates your conversation. She's warming up to you."))])
 
-    princess.add_action("give crown to princess", perform_multiple_actions,
-                        [(describe_something, ("My father's crown! You have put his soul to rest and may now take his place as the ruler of this land!")),
-                         (create_item, (wearing_crown,
-                          "She places the crown on your head")),
-                         (add_item_to_inventory, (wearing_crown, "It looks good on you!", "You have the crown."))])
+    # princess.add_action("give crown to princess", perform_multiple_actions,
+    #                     [(describe_something, ("My father's crown! You have put his soul to rest and may now take his place as the ruler of this land!")),
+    #                      (create_item, (wearing_crown,
+    #                       "She places the crown on your head")),
+    #                      (add_item_to_inventory, (wearing_crown, "It looks good on you!", "You have the crown."))])
 
     throne.add_action("sit on throne", end_game,
                       ("You are now the ruler of Action Castle! THE END"))
@@ -329,4 +328,5 @@ def build_game():
     courtyard.add_block("east", "The guard blocks your path", preconditions={
                         "location_does_not_have_item": guard})
 
-    return game
+    return Game(cottage)
+
