@@ -28,9 +28,13 @@ END = False
 
 # TODO
 # CHECK BLOCKS
-# CHECK END GAME
-# COURTYARD ONWARDS
+# GAME STATE SOMETIMES GETS SET TO NULL
+# END GAME STATE
 
+def end_game_check(handler_input):
+    if END == True:
+        return (handler_input.response_builder.speak("The game has ended.").ask("The game has ended").response)
+    return False
 
 def can_handle_name_based(handler_input, class_name):
     logger.error(f"can_handle_called {class_name} {handler}")
@@ -54,6 +58,9 @@ class SpecialCommandHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         global game_state
         global END
+        kill = end_game_check(handler_input)
+        if kill is not False:
+            return kill
         item1 = ask_utils.request_util.get_slot_value(
             handler_input, "item")
         if item1 and isinstance(item1, str):
@@ -92,6 +99,7 @@ class SpecialCommandHandler(AbstractRequestHandler):
             speak_output, end_game = run_special_command(game_state, "sit on throne")
         elif item1 == "key" and item2 == "door":
             speak_output, end_game = run_special_command(game_state, "open")
+        logger.error(f"GAME STATE IN SPECIAL COMMANDS END {game_state}")
         return (handler_input.response_builder.speak(speak_output).ask(speak_output).response)
 
 
@@ -102,6 +110,9 @@ class ExamineLocationHandler(AbstractRequestHandler):
         return can_handle_name_based(handler_input, "ExamineLocationHandler")
     def handle(self, handler_input):
         global game_state
+        kill = end_game_check(handler_input)
+        if kill is not False:
+            return kill
         speak_output = game_state.describe()
         return (handler_input.response_builder.speak(speak_output).ask(speak_output).response)
 
@@ -113,6 +124,9 @@ class ExamineInventoryHandler(AbstractRequestHandler):
         return can_handle_name_based(handler_input, "ExamineInventoryHandler")
 
     def handle(self, handler_input):
+        kill = end_game_check(handler_input)
+        if kill is not False:
+            return kill
         speak_output = check_inventory(game_state)
         return (handler_input.response_builder.speak(speak_output).ask(speak_output).response)
 
@@ -127,9 +141,13 @@ class PickUpItemRequestHandler(AbstractRequestHandler):
         '''The user wants to pick up an item'''
         global game_state
         global END
+        kill = end_game_check(handler_input)
+        if kill is not False:
+            return kill
         item = ask_utils.request_util.get_slot_value(handler_input, "item")
         prompt, end_game = take(game_state, item)
         END = END or end_game
+        logger.error(f"END after pickup? {END}")
         return (handler_input.response_builder.speak(prompt).ask(prompt).response)
 
 
@@ -145,11 +163,15 @@ class DirectionRequestHandler(AbstractRequestHandler):
         """ The user wants to go in some direction """
         global game_state
         global END
+        kill = end_game_check(handler_input)
+        if kill is not False:
+            return kill
         # direction =  ask_utils.get_intent_name(handler_input)
         direction = ask_utils.request_util.get_slot_value(
             handler_input, "direction")
-        logger.error(f"direction - {direction}")
         speak_output = ""
+        if game_state:
+            logger.error(f"BLOCKS{game_state.curr_location.blocks} - Location {game_state.curr_location}")
         if direction in game_state.curr_location.connections:
             if game_state.curr_location.is_blocked(direction, game_state):
                 # check to see whether that direction is blocked.

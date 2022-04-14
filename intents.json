@@ -1,0 +1,200 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "action castle",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "HelloWorldIntent",
+                    "slots": [],
+                    "samples": [
+                        "hello",
+                        "how are you",
+                        "say hi world",
+                        "say hi",
+                        "hi",
+                        "say hello world",
+                        "say hello"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "directionIntent",
+                    "slots": [
+                        {
+                            "name": "direction",
+                            "type": "DirectionSlotType"
+                        }
+                    ],
+                    "samples": [
+                        "go {direction}"
+                    ]
+                },
+                {
+                    "name": "pickupItem",
+                    "slots": [
+                        {
+                            "name": "item",
+                            "type": "ItemSlotType"
+                        }
+                    ],
+                    "samples": [
+                        "grab {item}",
+                        "pick up {item}",
+                        "take {item}"
+                    ]
+                },
+                {
+                    "name": "examineLocation",
+                    "slots": [],
+                    "samples": [
+                        "examine",
+                        "look"
+                    ]
+                },
+                {
+                    "name": "specialActionIntent",
+                    "slots": [
+                        {
+                            "name": "item",
+                            "type": "ItemSlotType"
+                        },
+                        {
+                            "name": "item_",
+                            "type": "ItemSlotType"
+                        }
+                    ],
+                    "samples": [
+                        "use {item} to open {item_}",
+                        "sit on {item}",
+                        "read {item} on {item_}",
+                        "feed {item} a {item_}",
+                        "smell {item}",
+                        "hit {item} with {item_}",
+                        "catch {item} with {item_}",
+                        "catch {item} "
+                    ]
+                },
+                {
+                    "name": "inventoryIntent",
+                    "slots": [],
+                    "samples": [
+                        "backpack",
+                        "what am i carrying",
+                        "inventory"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "DirectionSlotType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "south"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "west"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "east"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "north"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "up"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "down"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "out"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "ItemSlotType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "candle"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "crown"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "branch"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "lamp"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "mlap"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "potion"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "rose"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "fish"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "fishing pole"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
