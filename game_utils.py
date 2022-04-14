@@ -65,7 +65,6 @@ def describe_something(game, *args):
     """Describe some aspect of the Item"""
     # We don't need the game object here
     (description) = args[0]
-    logger.error(f"IN DESCRIBE SOMETHING, {description}")
     return description
 
 
@@ -323,8 +322,7 @@ def build_game():
                              "location_has_item": lit_lamp})
     drawbridge.add_block("east", "The Troll blocks your path", preconditions={
                          "location_does_not_have_item": troll})
-    drawbridge.add_block("cross", "The Troll blocks your path", preconditions={
-                         "location_does_not_have_item": troll})
+    
     courtyard.add_block("east", "The guard blocks your path", preconditions={
                         "location_does_not_have_item": guard})
 

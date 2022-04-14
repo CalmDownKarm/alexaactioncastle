@@ -1,0 +1,22 @@
+open action castle
+take pole
+take lamp
+go out
+go south
+catch fish
+catch fish with pole
+go north
+go north
+go up
+take branch
+go down
+go east
+go east
+feed troll a fish
+go east
+go east
+hit guard with club
+take key
+go east
+go east
+sit on throne

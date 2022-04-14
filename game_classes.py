@@ -274,5 +274,11 @@ def check_preconditions(preconditions, game, print_failure_reasons=True):
                 all_conditions_met = False
             if print_failure_reasons:
                 failure_reasons = "The %s isn't in this location" % item.name
+        if check == "location_does_not_have_item":
+            item = preconditions[check]
+            if item.name in game.curr_location.items:
+                all_conditions_met = False
+            if print_failure_reasons:
+                failure_reasons = "The %s is still there" % item.name
     # todo - add other types of preconditions
     return all_conditions_met, failure_reasons

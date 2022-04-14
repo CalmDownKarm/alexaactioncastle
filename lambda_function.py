@@ -72,18 +72,13 @@ class SpecialCommandHandler(AbstractRequestHandler):
         if item1 == "fish" and item2 is None:
             # Catch fish
             speak_output, end_game = run_special_command(game_state, "catch fish")
-            END = END or end_game
-
         elif item1 == "fish" and item2 in ["pole", "fishing pole"]:
             speak_output, end_game = run_special_command(game_state, "catch fish with pole")
-            END = END or end_game
-
             # Catch fish with fishing pole
         elif item1 == "troll" and (item2 is None or item2 in ['branch', 'club', 'stick']):
             # Hit troll with club
             speak_output, end_game = run_special_command(game_state, "attack troll")
-            END = END or end_game
-
+            END = True
         elif item1 == "troll" and item2 == "fish":
             speak_output, end_game = run_special_command(game_state, "feed troll a fish")
         elif item1 == "rose" and item2 is None:
@@ -97,6 +92,7 @@ class SpecialCommandHandler(AbstractRequestHandler):
             speak_output, end_game = run_special_command(game_state, "read runes")
         elif item1 == "throne" and item2 == None:
             speak_output, end_game = run_special_command(game_state, "sit on throne")
+            END = True
         elif item1 == "key" and item2 == "door":
             speak_output, end_game = run_special_command(game_state, "open")
         logger.error(f"GAME STATE IN SPECIAL COMMANDS END {game_state}")
@@ -109,7 +105,6 @@ class ExamineLocationHandler(AbstractRequestHandler):
     def can_handle(self, handler_input):
         return can_handle_name_based(handler_input, "ExamineLocationHandler")
     def handle(self, handler_input):
-        global game_state
         kill = end_game_check(handler_input)
         if kill is not False:
             return kill
@@ -146,8 +141,8 @@ class PickUpItemRequestHandler(AbstractRequestHandler):
             return kill
         item = ask_utils.request_util.get_slot_value(handler_input, "item")
         prompt, end_game = take(game_state, item)
-        END = END or end_game
-        logger.error(f"END after pickup? {END}")
+        if game_state is not None:
+            logger.error(f"game state is not None {game_state}")
         return (handler_input.response_builder.speak(prompt).ask(prompt).response)
 
 
@@ -171,7 +166,7 @@ class DirectionRequestHandler(AbstractRequestHandler):
             handler_input, "direction")
         speak_output = ""
         if game_state:
-            logger.error(f"BLOCKS{game_state.curr_location.blocks} - Location {game_state.curr_location}")
+            logger.error(f"BLOCKS{game_state.curr_location.blocks} - Location {game_state.curr_location.name}")
         if direction in game_state.curr_location.connections:
             if game_state.curr_location.is_blocked(direction, game_state):
                 # check to see whether that direction is blocked.
